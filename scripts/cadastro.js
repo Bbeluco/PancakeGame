@@ -1,5 +1,5 @@
 function createAlternative() {
-    let alternativasDisponiveis = document.getElementById("respostas");
+    let alternativasDisponiveis = document.getElementById("alternativas");
 
     let divAlternativa = document.createElement("div");
     divAlternativa.id = "div_alternativa";
@@ -50,7 +50,7 @@ function addMoreAlternatives() {
         let btnRemoveAlternativa = ultimaAlternativaDisponivel.querySelector("button[id='btn_remove_alternativa']");
         ultimaAlternativaDisponivel.removeChild(btnRemoveAlternativa);
     }
-    document.getElementById("respostas").appendChild(createAlternative())
+    document.getElementById("alternativas").appendChild(createAlternative())
 }
 
 function removeAlternative() {
@@ -68,14 +68,33 @@ function removeAlternative() {
 document.addEventListener("DOMContentLoaded", () => {
     let tipoRespostaMulti = document.getElementById("tipoMultipla")
     let tipoRespostaTexto = document.getElementById("tipoTexto")
+    let respostas = document.getElementById("respostas");
 
-    tipoRespostaMulti.ariaChecked = true;
     tipoRespostaMulti.addEventListener("change", () => {
-        document.getElementById("respostas").innerHTML = "";
-        document.getElementById("respostas").appendChild(createAlternative())
+        let alternativas = document.getElementById("alternativas");
+
+        alternativas.innerHTML = "";
+        alternativas.appendChild(createAlternative())
+        alternativas.appendChild(divRespostaCorreta)
     })
 
     tipoRespostaTexto.addEventListener("change", () => {
-        document.getElementById("respostas").innerHTML = `<div><label>Resposta correta: </label><input type="text"></div>`
+        document.getElementById("alternativas").innerHTML = "";
     })
+
+    respostas.appendChild(createInputRespostaCorreta());
 })
+
+function createInputRespostaCorreta() {
+    let divRespostaCorreta = document.createElement("div");
+    let labelRespostaCorreta = document.createElement("label");
+    labelRespostaCorreta.textContent = "Resposta correta: ";
+    let inputRespostaCorreta = document.createElement("input");
+    inputRespostaCorreta.type = "text";
+    inputRespostaCorreta.id = "resposta_correta";
+
+    divRespostaCorreta.appendChild(labelRespostaCorreta);
+    divRespostaCorreta.appendChild(inputRespostaCorreta);
+
+    return divRespostaCorreta;
+}
