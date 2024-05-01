@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pancake Game</title>
+    <link rel="stylesheet" href="../styles/cadastro.css">
+    <script src="../scripts/cadastro.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="../index.html">Novo jogo</a>
+        <a href="./resultados.html">Resultados</a>
+        <a href="./cadastro.html">Cadastrar novas perguntas</a>
+        <button>Exportar perguntas e resultados</button>
+    </nav>
+
+    <div>
+        <h1>Cadastre novas perguntas</h1>
+        <label for="pergunta">Pergunta</label>
+        <textarea class="texto_pergunta" name="pergunta" id="pergunta" cols="30" rows="10"></textarea>
+        <fieldset>
+            <label for="tipo">Tipo de resposta</label>
+            <div>
+                <input type="radio" id="tipoMultipla" name="tipo" value="multipla" checked="true"/>
+                <label for="tipoMultipla">Multipla escolha</label>
+            </div>
+            <div>
+                <input type="radio" id="tipoTexto" name="tipo" value="texto" />
+                <label for="tipoTexto">Texto</label>
+            </div>
+        </fieldset>
+
+        <div id="respostas"></div>
+
+        <label for="nivel_dificuldade">Nivel de dificuldade</label>
+        <select name="nivel_dificuldade" id="nivel_dificuldade">
+            <option value="facil">FACIL</option>
+            <option value="medio">MEDIO</option>
+            <option value="dificil">DIFICIL</option>
+        </select><br/>
+        <button>CADASTRAR</button>
+    </div>
+</body>
+</html>
