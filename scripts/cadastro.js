@@ -39,7 +39,6 @@ function createRemoveAlternativeButton() {
     return btnRemoverAlternativa;
 }
 
-
 function addMoreAlternatives() {
     let alternativasDisponiveis = document.querySelectorAll("div[id='div_alternativa']");
     let ultimaAlternativaDisponivel = alternativasDisponiveis[alternativasDisponiveis.length - 1];
@@ -97,4 +96,49 @@ function createInputRespostaCorreta() {
     divRespostaCorreta.appendChild(inputRespostaCorreta);
 
     return divRespostaCorreta;
+}
+
+function appendQuestionToList() {
+    let categoriaQuestao = document.getElementById("categoria").value;
+    let textoQuestao = document.getElementById("pergunta").value;
+    let respostaQuestao = document.getElementById("resposta_correta").value;
+    let nivelQuestao = document.getElementById("nivel_dificuldade").value;
+    let alternativasQuestao = document.getElementById("alternativas");
+
+    let mensagemDeErro = validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao);
+
+    if(mensagemDeErro) {
+        alert(mensagemDeErro);
+        return;
+    }
+
+    // if(localStorage.length == 0) {
+    //     localStorage.setItem("perguntas")
+    // }
+}
+
+function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao) {
+    let mensagemDeErro = "";
+    
+    for (let i = 0; i < alternativasQuestao?.children.length; i++) {
+        if(!array[i].textContent) {
+            mensagemDeErro += "Ha alternativas vazias, por favor verifique as alternativas cadastradas\n"
+            break;
+        }
+    }
+
+    if(!categoriaQuestao) {
+        console.log(categoriaQuestao)
+        mensagemDeErro += "A categoria da questao nao esta preenchida, favor verificar\n"
+    }
+
+    if(!textoQuestao) {
+        mensagemDeErro += "A pergunta nao esta preenchida, favor verificar\n"
+    }
+
+    if(!respostaQuestao) {
+        mensagemDeErro += "A resposta nao esta preenchida, favor verificar\n"
+    }
+
+    return mensagemDeErro;
 }
