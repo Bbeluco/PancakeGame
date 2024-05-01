@@ -9,6 +9,7 @@ function createAlternative() {
 
     let inputAlternativa = document.createElement("input");
     inputAlternativa.type = "text";
+    inputAlternativa.id = "texto_alternativa"
 
     divAlternativa.appendChild(labelAlternativa);
     divAlternativa.appendChild(inputAlternativa);
@@ -99,11 +100,11 @@ function createInputRespostaCorreta() {
 }
 
 function appendQuestionToList() {
-    let categoriaQuestao = document.getElementById("categoria").value;
+    let categoriaQuestao = document.getElementById("categoria").value.toLowerCase();
     let textoQuestao = document.getElementById("pergunta").value;
     let respostaQuestao = document.getElementById("resposta_correta").value;
     let nivelQuestao = document.getElementById("nivel_dificuldade").value;
-    let alternativasQuestao = document.getElementById("alternativas");
+    let alternativasQuestao = document.querySelectorAll("input[id='texto_alternativa']");
 
     let mensagemDeErro = validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao);
 
@@ -112,16 +113,47 @@ function appendQuestionToList() {
         return;
     }
 
-    // if(localStorage.length == 0) {
-    //     localStorage.setItem("perguntas")
-    // }
+    if(localStorage.length == 0) {
+
+        let categoria = {};
+        categoria[categoriaQuestao] = [{
+            "questao": textoQuestao,
+            "alternativas": getTextFromAllAlternatives(alternativasQuestao),
+            "resposta": respostaQuestao,
+            "dificuldade": nivelQuestao
+        }]
+
+        localStorage.setItem("perguntas", JSON.stringify(categoria))
+    } else {
+        let perguntas = JSON.parse(localStorage.getItem("perguntas"))
+        if(perguntas[categoriaQuestao]) {
+            let novaQuestao = {
+                "questao": textoQuestao,
+                "alternativas": getTextFromAllAlternatives(alternativasQuestao),
+                "resposta": respostaQuestao,
+                "dificuldade": nivelQuestao
+            }
+
+            perguntas[categoriaQuestao].push(novaQuestao)
+        } else {
+            perguntas[categoriaQuestao] = [{
+                "questao": textoQuestao,
+                "alternativas": getTextFromAllAlternatives(alternativasQuestao),
+                "resposta": respostaQuestao,
+                "dificuldade": nivelQuestao
+            }]
+
+
+        }
+        localStorage.setItem("perguntas", JSON.stringify(perguntas))
+    }
 }
 
 function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao) {
     let mensagemDeErro = "";
     
-    for (let i = 0; i < alternativasQuestao?.children.length; i++) {
-        if(!array[i].textContent) {
+    for (let i = 0; i < alternativasQuestao.length; i++) {
+        if(!alternativasQuestao[i].value) {
             mensagemDeErro += "Ha alternativas vazias, por favor verifique as alternativas cadastradas\n"
             break;
         }
@@ -141,4 +173,13 @@ function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuesta
     }
 
     return mensagemDeErro;
+}
+
+function getTextFromAllAlternatives(alternativesAvailable) {
+    let alternativesText = []
+    for (let i = 0; i < alternativesAvailable.length; i++) {
+        alternativesText.push(alternativesAvailable[i].value);
+    }
+
+    return alternativesText;
 }
