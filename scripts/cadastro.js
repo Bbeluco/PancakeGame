@@ -147,6 +147,8 @@ function appendQuestionToList() {
         }
         localStorage.setItem("perguntas", JSON.stringify(perguntas))
     }
+
+    resetTodosCampos();
 }
 
 function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao) {
@@ -182,4 +184,12 @@ function getTextFromAllAlternatives(alternativesAvailable) {
     }
 
     return alternativesText;
+}
+
+function resetTodosCampos() {
+    document.getElementById("categoria").value = ""
+    document.getElementById("pergunta").value = "";
+    document.getElementById("resposta_correta").value = "";
+    document.getElementById("nivel_dificuldade").value = "";
+    document.getElementById("tipoTexto").click()
 }
