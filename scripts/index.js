@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         let inputOpt = document.createElement("input");
         inputOpt.type = "checkbox";
-        inputOpt.id = element;
+        inputOpt.id = "categoria_disponivel";
         inputOpt.label = element;
 
         let labelOpt = document.createElement("label");
