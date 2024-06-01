@@ -18,14 +18,34 @@ function iniciar() {
     
     let perguntas_disponiveis = JSON.parse(localStorage.getItem("perguntas"))
     let opcoes_possiveis = []
-    categorias.forEach(el => {
-        opcoes_possiveis = [...opcoes_possiveis, ...perguntas_disponiveis[el.label]]
-    });
+    opcoes_possiveis = [...perguntas_disponiveis["teste"], ...opcoes_possiveis]
+    console.log(opcoes_possiveis)
+
+    let c = JSON.parse(localStorage.getItem("perguntas"))
+    let d = []
+    d = [...c["teste"], ...d]
+    console.log(d)
 
     let opcoes_embaralhadas = shuffle(opcoes_possiveis);
-    if(opcoes_embaralhadas.length > quantidade_de_perguntas) {
+    // console.log(quantidade_de_perguntas)
+    if(quantidade_de_perguntas > opcoes_embaralhadas.length) {
+        // console.log(opcoes_embaralhadas)
         // Cenario que eu tenho que renderizar todas as perguntas
     } else {
         // Cenario que eu tenho mais perguntas disponiveis do que o usuario pediu
     }
+}
+
+function poc() {
+
+    let perguntas_disponiveis = JSON.parse('{"teste":[{"questao":"Teste","alternativas":[],"resposta":"A","dificuldade":"facil"},{"questao":"Teste123","alternativas":[],"resposta":"B","dificuldade":"medio"}]}')
+    let opcoes_possiveis = []
+    opcoes_possiveis = [...perguntas_disponiveis["teste"], ...opcoes_possiveis]
+    console.log(opcoes_possiveis)
+
+    let c = JSON.parse('{"teste":[{"questao":"Teste","alternativas":[],"resposta":"A","dificuldade":"facil"},{"questao":"Teste123","alternativas":[],"resposta":"B","dificuldade":"medio"}]}')
+    let d = []
+    d = [...c["teste"], ...d]
+    console.log(d)
+
 }
