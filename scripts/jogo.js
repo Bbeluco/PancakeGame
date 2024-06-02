@@ -38,14 +38,21 @@ function iniciar() {
 
 function poc() {
 
-    let perguntas_disponiveis = JSON.parse('{"teste":[{"questao":"Teste","alternativas":[],"resposta":"A","dificuldade":"facil"},{"questao":"Teste123","alternativas":[],"resposta":"B","dificuldade":"medio"}]}')
+    let json = {"teste":[{"questao":"Teste","alternativas":[],"resposta":"A","dificuldade":"facil"},{"questao":"Teste123","alternativas":[],"resposta":"B","dificuldade":"medio"}]}
+
+    if(localStorage.getItem("perguntas") == null) {
+        localStorage.setItem("perguntas", JSON.stringify(json));
+    }
+
+    let perguntas_disponiveis = JSON.parse(localStorage.getItem("perguntas"))
     let opcoes_possiveis = []
     opcoes_possiveis = [...perguntas_disponiveis["teste"], ...opcoes_possiveis]
     console.log(opcoes_possiveis)
 
-    let c = JSON.parse('{"teste":[{"questao":"Teste","alternativas":[],"resposta":"A","dificuldade":"facil"},{"questao":"Teste123","alternativas":[],"resposta":"B","dificuldade":"medio"}]}')
+    let c = JSON.parse(localStorage.getItem("perguntas"))
     let d = []
     d = [...c["teste"], ...d]
     console.log(d)
 
+    // let opcoes_embaralhadas = shuffle(opcoes_possiveis);
 }
