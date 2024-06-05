@@ -10,6 +10,7 @@ const shuffle = (arr) => {
 }
 
 function iniciar() {
+    perguntaAtual = 0;
     let categorias = document.querySelectorAll("input[id='categoria_disponivel']:checked");
     let quantidade_de_perguntas = document.getElementById("quantidade_de_perguntas").value;
     if(categorias.length == 0) {
@@ -17,17 +18,10 @@ function iniciar() {
         return;
     }
     
-    // let perguntas_disponiveis = JSON.parse(localStorage.getItem("perguntas"))
-    // let opcoes_possiveis = []
-    // categorias.forEach(el => {
-    //     opcoes_possiveis = [...opcoes_possiveis, ...perguntas_disponiveis[el.label]]
-    // });
-
-
-
     let opcoes_embaralhadas = shuffle(buscar_perguntas(categorias));
-    opcoes_embaralhadas = opcoes_embaralhadas.slice(0, quantidade_de_perguntas)
-    carregar_pergunta(opcoes_embaralhadas);
+    opcoes_embaralhadas = opcoes_embaralhadas.slice(0, quantidade_de_perguntas);
+    carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
+    document.getElementById("btn_iniciar_jogo").disabled = true;
 }
 
 function buscar_perguntas(categorias) {
@@ -40,7 +34,7 @@ function buscar_perguntas(categorias) {
     return opcoes_possiveis;
 }
 
-function carregar_pergunta(opcoes_embaralhadas) {
+function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     let jogo = document.getElementById("jogo");
     if(document.getElementById("questao_atual")) {
         jogo.removeChild(document.getElementById("questao_atual"))
@@ -66,7 +60,7 @@ function carregar_pergunta(opcoes_embaralhadas) {
         criar_resposta_texto(titulo_questao, questao_atual)
     }
 
-    criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas)
+    criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas)
 
     jogo.appendChild(questao_atual)
 }
@@ -99,18 +93,38 @@ function criar_resposta_texto(titulo_questao, questao_atual) {
     questao_atual.appendChild(input_resposta);
 }
 
-function criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas) {
+function criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas) {
     let botao_proxima_questao = document.createElement("button");
     botao_proxima_questao.textContent = "Proxima questao";
     botao_proxima_questao.addEventListener("click", function(){
-        proxima_pergunta(opcoes_embaralhadas)
+        proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas)
     })
 
     questao_atual.appendChild(document.createElement("br"))
     questao_atual.appendChild(botao_proxima_questao);
 }
 
-function proxima_pergunta(opcoes_embaralhadas) {
+function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
+    if(!conferir_pergunta_respondida()) {
+        return;
+    }
     perguntaAtual += 1;
+    if(perguntaAtual >= quantidade_de_perguntas) {
+        alert("Fim de jogo");
+        document.getElementById("btn_iniciar_jogo").disabled = false;
+    }
     carregar_pergunta(opcoes_embaralhadas);
+}
+
+function conferir_pergunta_respondida() {
+    let is_pergunta_respondida = false;
+    let respostas_disponiveis = document.querySelectorAll("[required]");
+    for (let i = 0; i < respostas_disponiveis.length; i++) {
+        const campo_resposta = respostas_disponiveis[i];
+        is_pergunta_respondida = campo_resposta.type == "radio" 
+        ? campo_resposta.checked 
+        : campo_resposta.value != "";
+    }
+    console.log(is_pergunta_respondida)
+    return is_pergunta_respondida;
 }
