@@ -1,0 +1,5 @@
+Salvar pontuacao do jogador quando finalizar de responder as perguntas
+Carregar o top 10 melhores posicoes na aba resultados
+Dar um feedback pro usuario (quando errar) qual era a resposta correta
+Inserir uma funcionalidade de reset de podio (para garantir em casos que por exemplo 11 pessoas possuem a mesma pontuacao maxima)
+Inserir funcionalidade de exportacao e importacao de dados

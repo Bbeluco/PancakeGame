@@ -1,5 +1,5 @@
 let perguntaAtual = 0;
-
+let jogo_atual;
 const shuffle = (arr) => {
     for(let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -11,8 +11,23 @@ const shuffle = (arr) => {
 
 function iniciar() {
     perguntaAtual = 0;
+    let date = new Date();
     let categorias = document.querySelectorAll("input[id='categoria_disponivel']:checked");
     let quantidade_de_perguntas = document.getElementById("quantidade_de_perguntas").value;
+    let nome_usuario = document.getElementById("nome_usuario").value;
+
+    jogo_atual = {
+        data: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+        nome_usuario,
+        pontuacao: 0,
+        quantidade_perguntas_acertadas: 0
+    };
+
+    if(nome_usuario.length < 3) {
+        alert("Favor digitar um nome de usuario com no minimo 3 caracteres");
+        return;
+    }
+
     if(categorias.length == 0) {
         alert("Por favor, selecione no minimo uma categoria");
         return;
@@ -105,26 +120,59 @@ function criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas, quantidad
 }
 
 function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
-    if(!conferir_pergunta_respondida()) {
+    let resposta_dada = conferir_pergunta_respondida();
+    if(!resposta_dada) {
         return;
     }
+
+    let resposta_correta = opcoes_embaralhadas[perguntaAtual]['resposta'];
+    if(resposta_dada.toLowerCase() == resposta_correta.toLowerCase()) {
+        atualizar_status_jogo_atual(opcoes_embaralhadas[perguntaAtual]['dificuldade']);
+    }
+
     perguntaAtual += 1;
     if(perguntaAtual >= quantidade_de_perguntas) {
         alert("Fim de jogo");
         document.getElementById("btn_iniciar_jogo").disabled = false;
+        return;
     }
     carregar_pergunta(opcoes_embaralhadas);
 }
 
+function atualizar_status_jogo_atual(dificuldade) {
+    let pontuacao;
+    switch(dificuldade) {
+        case 'facil':
+            pontuacao = 100;
+            break;
+        case 'medio':
+            pontuacao = 200;
+            break;
+        case 'dificil':
+            pontuacao = 300;
+            break;
+    }
+
+    jogo_atual['pontuacao'] += pontuacao;
+    jogo_atual['quantidade_perguntas_acertadas'] += 1;
+}
+
 function conferir_pergunta_respondida() {
-    let is_pergunta_respondida = false;
+    let is_pergunta_respondida = "";
     let respostas_disponiveis = document.querySelectorAll("[required]");
     for (let i = 0; i < respostas_disponiveis.length; i++) {
         const campo_resposta = respostas_disponiveis[i];
         is_pergunta_respondida = campo_resposta.type == "radio" 
         ? campo_resposta.checked 
         : campo_resposta.value != "";
+
+        if(is_pergunta_respondida) {
+            if(campo_resposta.type == "radio") {
+                return i + 1 + "";
+            } else {
+                return campo_resposta.value
+            }
+        }
     }
-    console.log(is_pergunta_respondida)
     return is_pergunta_respondida;
 }
