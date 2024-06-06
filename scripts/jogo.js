@@ -131,12 +131,22 @@ function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     }
 
     perguntaAtual += 1;
-    if(perguntaAtual >= quantidade_de_perguntas) {
+    if(!deve_finalizar_jogo(opcoes_embaralhadas)) {
+        carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
+    }
+}
+
+function deve_finalizar_jogo(opcoes_disponiveis) {
+    let acabaram_perguntas = perguntaAtual >= Number(quantidade_de_perguntas) || perguntaAtual >= opcoes_disponiveis.length
+    if(acabaram_perguntas) {
+        let pergunta_atual = document.getElementById('questao_atual');
+        document.getElementById('jogo').removeChild(pergunta_atual);
         alert("Fim de jogo");
         document.getElementById("btn_iniciar_jogo").disabled = false;
-        return;
+        return true;
     }
-    carregar_pergunta(opcoes_embaralhadas);
+
+    return false;
 }
 
 function atualizar_status_jogo_atual(dificuldade) {
