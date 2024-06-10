@@ -68,19 +68,24 @@ function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     
     
     if(pergunta_atual["alternativas"].length > 0) {
+        let possiveis_respostas = document.createElement('div');
+        possiveis_respostas.className = "possiveis_respostas"
         pergunta_atual["alternativas"].forEach(alt => {
-            criar_resposta_multi(titulo_questao, alt, questao_atual)
+            criar_resposta_multi(titulo_questao, alt, possiveis_respostas)
         })
+        questao_atual.appendChild(possiveis_respostas)
     } else {
         criar_resposta_texto(titulo_questao, questao_atual)
     }
 
-    criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas)
+    criar_btn_responder(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas)
 
     jogo.appendChild(questao_atual)
 }
 
 function criar_resposta_multi(titulo_questao, alternativa, questao_atual) {
+    let resposta = document.createElement("div");
+    resposta.className = "opcao";
     let input_resposta = document.createElement("input");
     input_resposta.name = titulo_questao.textContent.substring(0, 10).replace(" ", "_");
     input_resposta.type = "radio";
@@ -88,10 +93,12 @@ function criar_resposta_multi(titulo_questao, alternativa, questao_atual) {
     input_resposta.required = true;
 
     let label_resposta = document.createElement("label");
-    label_resposta.for = input_resposta.name
+    label_resposta.id = input_resposta.id;
     label_resposta.textContent = alternativa;
-    questao_atual.appendChild(input_resposta);
-    questao_atual.appendChild(label_resposta);
+    resposta.appendChild(input_resposta);
+    resposta.appendChild(label_resposta);
+
+    questao_atual.appendChild(resposta);
 }
 
 function criar_resposta_texto(titulo_questao, questao_atual) {
@@ -108,18 +115,19 @@ function criar_resposta_texto(titulo_questao, questao_atual) {
     questao_atual.appendChild(input_resposta);
 }
 
-function criar_btn_proxima_questao(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas) {
-    let botao_proxima_questao = document.createElement("button");
-    botao_proxima_questao.textContent = "Proxima questao";
-    botao_proxima_questao.addEventListener("click", function(){
-        proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas)
+function criar_btn_responder(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas) {
+    let btn_responder = document.createElement("button");
+    btn_responder.id = "responder"
+    btn_responder.className = "responder"
+    btn_responder.textContent = "Responder";
+    btn_responder.addEventListener("click", function(){
+        proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas, questao_atual)
     })
 
-    questao_atual.appendChild(document.createElement("br"))
-    questao_atual.appendChild(botao_proxima_questao);
+    questao_atual.appendChild(btn_responder);
 }
 
-function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
+function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas, questao_atual) {
     let resposta_dada = conferir_pergunta_respondida();
     if(!resposta_dada) {
         return;
@@ -128,12 +136,32 @@ function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     let resposta_correta = opcoes_embaralhadas[perguntaAtual]['resposta'];
     if(resposta_dada.toLowerCase() == resposta_correta.toLowerCase()) {
         atualizar_status_jogo_atual(opcoes_embaralhadas[perguntaAtual]['dificuldade']);
+    } else {
+        let id_resposta_correta = document.querySelectorAll('input[type="radio"]')[Number(resposta_correta) - 1].id
+        document.querySelector(`label[id='${id_resposta_correta}']`).style.color = 'red';
+        criar_botao_continuar(opcoes_embaralhadas, quantidade_de_perguntas, questao_atual);
+        return;
     }
 
     perguntaAtual += 1;
     if(!deve_finalizar_jogo(opcoes_embaralhadas)) {
         carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
     }
+}
+
+function criar_botao_continuar(opcoes_embaralhadas, quantidade_de_perguntas, questao_atual) {
+    document.getElementById("questao_atual").removeChild(document.getElementById("responder"));
+
+    let btn_continuar = document.createElement("button");
+    btn_continuar.textContent = "Continuar";
+    btn_continuar.addEventListener("click", function(){
+        perguntaAtual += 1;
+        if(!deve_finalizar_jogo(opcoes_embaralhadas)) {
+            carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
+        }
+    })
+
+    questao_atual.appendChild(btn_continuar)
 }
 
 function deve_finalizar_jogo(opcoes_disponiveis) {
