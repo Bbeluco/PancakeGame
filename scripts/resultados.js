@@ -2,6 +2,7 @@ function carregar_resultados() {
     let podio = JSON.parse(localStorage.getItem("podio"))
 
     let tabela = document.createElement("table");
+    tabela.id = "tabela_resultados"
 
     const linha_titulo = tabela.insertRow();
 
@@ -36,4 +37,13 @@ function carregar_resultados() {
 
 
     document.getElementById("resultados").appendChild(tabela);
+}
+
+function reiniciar_tabela() {
+    if(confirm("Essa acao ira apagar todos os registros de resultados. Deseja prosseguir?")) {
+        localStorage.setItem("podio", JSON.stringify([]));
+        document.getElementById("resultados").removeChild()
+    }
+
+
 }
