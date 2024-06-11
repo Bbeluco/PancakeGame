@@ -1,4 +1,32 @@
+a {
+    color: white;
+}
+
+body {
+    font-family: monospace;
+    background: rgb(2,0,36);
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    height: 97vh;
+    color: white
+}
+
+textarea {
+    background-color: transparent;
+    color: white;
+}
+
+fieldset {
+    margin-left: 0px;
+    width: 90vw;
+}
+
+
 .texto_pergunta {
     min-width: 99%;
     resize: none;
+}
+
+.pergunta_titulo {
+    font-weight: bold;
+    font-size: large;
 }
