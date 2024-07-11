@@ -111,8 +111,14 @@ function criar_resposta_texto(titulo_questao, questao_atual) {
     label_resposta.for = input_resposta.name
     label_resposta.textContent = "Resposta: "
 
+    let p_resposta_correta = document.createElement("p");
+    p_resposta_correta.style.color = "#ffbf00";
+    p_resposta_correta.id = "resposta_correta"
+    p_resposta_correta.style.fontWeight = "bold"
+
     questao_atual.appendChild(label_resposta);
     questao_atual.appendChild(input_resposta);
+    questao_atual.appendChild(p_resposta_correta);
 }
 
 function criar_btn_responder(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas) {
@@ -132,13 +138,13 @@ function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas, questao_
     if(!resposta_dada) {
         return;
     }
-
-    let resposta_correta = opcoes_embaralhadas[perguntaAtual]['resposta'];
+    let pergunta_atual = opcoes_embaralhadas[perguntaAtual];
+    let resposta_correta = pergunta_atual['resposta'];
     if(resposta_dada.toLowerCase() == resposta_correta.toLowerCase()) {
-        atualizar_status_jogo_atual(opcoes_embaralhadas[perguntaAtual]['dificuldade']);
+        atualizar_status_jogo_atual(pergunta_atual['dificuldade']);
     } else {
-        let id_resposta_correta = document.querySelectorAll('input[type="radio"]')[Number(resposta_correta) - 1].id
-        document.querySelector(`label[id='${id_resposta_correta}']`).style.color = 'red';
+        mostrar_resposta_correta(pergunta_atual, resposta_correta);
+        
         criar_botao_continuar(opcoes_embaralhadas, quantidade_de_perguntas, questao_atual);
         return;
     }
@@ -146,6 +152,16 @@ function proxima_pergunta(opcoes_embaralhadas, quantidade_de_perguntas, questao_
     perguntaAtual += 1;
     if(!deve_finalizar_jogo(opcoes_embaralhadas)) {
         carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
+    }
+}
+
+function mostrar_resposta_correta(pergunta_atual, resposta_correta) {
+    if(pergunta_atual['alternativas'].length == 0) {
+        let p_resposta_correta = document.getElementById("resposta_correta");
+        p_resposta_correta.textContent = resposta_correta;
+    } else {
+        let id_resposta_correta = document.querySelectorAll('input[type="radio"]')[Number(resposta_correta) - 1].id
+        document.querySelector(`label[id='${id_resposta_correta}']`).style.color = 'red';
     }
 }
 
