@@ -99,7 +99,7 @@ function createInputRespostaCorreta() {
     return divRespostaCorreta;
 }
 
-function appendQuestionToList() {
+async function appendQuestionToList() {
     let categoriaQuestao = document.getElementById("categoria").value.toLowerCase();
     let textoQuestao = document.getElementById("pergunta").value;
     let respostaQuestao = document.getElementById("resposta_correta").value;
@@ -113,40 +113,25 @@ function appendQuestionToList() {
         return;
     }
 
-    if(localStorage.length == 0) {
-
-        let categoria = {};
-        categoria[categoriaQuestao] = [{
-            "questao": textoQuestao,
-            "alternativas": getTextFromAllAlternatives(alternativasQuestao),
-            "resposta": respostaQuestao,
-            "dificuldade": nivelQuestao
-        }]
-
-        localStorage.setItem("perguntas", JSON.stringify(categoria))
-    } else {
-        let perguntas = JSON.parse(localStorage.getItem("perguntas"))
-        if(perguntas[categoriaQuestao]) {
-            let novaQuestao = {
-                "questao": textoQuestao,
-                "alternativas": getTextFromAllAlternatives(alternativasQuestao),
-                "resposta": respostaQuestao,
-                "dificuldade": nivelQuestao
-            }
-
-            perguntas[categoriaQuestao].push(novaQuestao)
-        } else {
-            perguntas[categoriaQuestao] = [{
-                "questao": textoQuestao,
-                "alternativas": getTextFromAllAlternatives(alternativasQuestao),
-                "resposta": respostaQuestao,
-                "dificuldade": nivelQuestao
-            }]
-
-
-        }
-        localStorage.setItem("perguntas", JSON.stringify(perguntas))
+    let perguntas_atuais = JSON.parse(localStorage.getItem("perguntas"));
+    const nova_pergunta = {
+        "questao": textoQuestao,
+        "alternativas": getTextFromAllAlternatives(alternativasQuestao),
+        "resposta": respostaQuestao,
+        "dificuldade": nivelQuestao
     }
+
+    if(perguntas_atuais == null) {
+        perguntas_atuais = {};
+    }
+
+    if(perguntas_atuais[categoriaQuestao]) {
+        perguntas_atuais[categoriaQuestao].push(nova_pergunta)
+    } else {
+        perguntas_atuais[categoriaQuestao] = [nova_pergunta]
+    }
+
+    localStorage.setItem("perguntas", JSON.stringify(perguntas_atuais))
 
     resetTodosCampos();
 }
@@ -193,3 +178,10 @@ function resetTodosCampos() {
     document.getElementById("nivel_dificuldade").value = "";
     document.getElementById("tipoTexto").click()
 }
+
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+});
