@@ -1,3 +1,5 @@
+// const fs = require('fs')
+
 let perguntaAtual = 0;
 let jogo_atual;
 const shuffle = (arr) => {
