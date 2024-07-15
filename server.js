@@ -1,9 +1,11 @@
 let http = require('http');
 let fs = require('fs');
 const CriacaoPerguntas = require('./classes/CriacaoPerguntas');
+const Podium = require('./classes/Podium');
 
 const PORT = 8000;
 
+//Passar para class depois
 function returnFile(url, res) {
   let filePath = '.' + url;
   if(filePath == "./") {
@@ -35,6 +37,12 @@ http.createServer((req, res) => {
   if(req.method == "POST" && req.url == "/save") {
     const criacaoPerguntas = new CriacaoPerguntas("perguntas.json", res);
     criacaoPerguntas.createQuestion(req);
+  } else if(req.method == "POST" && req.url == "/podium") {
+    const podium = new Podium("placar.json", res);
+    podium.updatePodium(req)
+  } else if(req.method == "DELETE" && req.url == "/podium") {
+    const podium = new Podium("placar.json", res);
+    podium.resetPodium(req)
   } else {
     returnFile(req.url, res);
   }
