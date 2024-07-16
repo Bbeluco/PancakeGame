@@ -113,7 +113,6 @@ async function appendQuestionToList() {
         return;
     }
 
-    // let perguntas_atuais = JSON.parse(localStorage.getItem("perguntas"));
     const nova_pergunta = {
         "categoria": categoriaQuestao,
         "questao": textoQuestao,
@@ -136,20 +135,6 @@ async function appendQuestionToList() {
         alert("Erro ao cadastrar pergunta, consulte os logs para saber mais");
         console.error(err);
     })
-
-    // if(perguntas_atuais == null) {
-    //     perguntas_atuais = {};
-    // }
-
-    // if(perguntas_atuais[categoriaQuestao]) {
-    //     perguntas_atuais[categoriaQuestao].push(nova_pergunta)
-    // } else {
-    //     perguntas_atuais[categoriaQuestao] = [nova_pergunta]
-    // }
-
-    // localStorage.setItem("perguntas", JSON.stringify(perguntas_atuais))
-
-    // resetTodosCampos();
 }
 
 function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao) {

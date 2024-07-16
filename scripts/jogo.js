@@ -11,7 +11,7 @@ const shuffle = (arr) => {
     return arr;
 }
 
-function iniciar() {
+async function iniciar() {
     perguntaAtual = 0;
     let date = new Date();
     let categorias = document.querySelectorAll("input[id='categoria_disponivel']:checked");
@@ -35,20 +35,23 @@ function iniciar() {
         return;
     }
     
-    let opcoes_embaralhadas = shuffle(buscar_perguntas(categorias));
+    let opcoes_embaralhadas = shuffle(await buscar_perguntas(categorias));
     opcoes_embaralhadas = opcoes_embaralhadas.slice(0, quantidade_de_perguntas);
     carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas);
     document.getElementById("btn_iniciar_jogo").disabled = true;
 }
 
-function buscar_perguntas(categorias) {
-    let perguntas_disponiveis = JSON.parse(localStorage.getItem("perguntas"))
-    let opcoes_possiveis = []
-    categorias.forEach(el => {
-        opcoes_possiveis = [...opcoes_possiveis, ...perguntas_disponiveis[el.label]]
-    });
+async function buscar_perguntas(categorias) {
+    return fetch("http://localhost:8000/perguntas.json").then(data => {
+        return data.json();
+    }).then(perguntas => {
+        let opcoes_possiveis = []
+        categorias.forEach(el => {
+            opcoes_possiveis.push(...perguntas[el.label]);
+        });
 
-    return opcoes_possiveis;
+        return opcoes_possiveis;
+    })
 }
 
 function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {

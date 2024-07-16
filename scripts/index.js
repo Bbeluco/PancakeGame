@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     let div_escolha_categorias = document.getElementById("escolha_categorias");
 
-    let perguntas = JSON.parse(localStorage.getItem("perguntas"));
+    let perguntas = await getPerguntas();
     let arrPerguntas = Object.keys(perguntas);
     
     arrPerguntas.forEach(element => {
@@ -19,3 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
         div_escolha_categorias.appendChild(labelOpt);
     });
 })
+
+async function getPerguntas() {
+    return fetch("http://localhost:8000/perguntas.json").then(data => {
+        return data.json();
+    })
+}
