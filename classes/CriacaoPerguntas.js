@@ -9,7 +9,7 @@ function prepareQuestionStructure(perguntasAtuais, novaPergunta) {
     perguntasAtuais[novaPergunta["categoria"]].push({ 
         "questao": novaPergunta["questao"],
         "alternativas": novaPergunta["alternativas"],
-        "this.resposta": novaPergunta["this.resposta"],
+        "resposta": novaPergunta["resposta"],
         "dificuldade": novaPergunta["dificuldade"]
     })
     
@@ -25,26 +25,27 @@ module.exports = class CriacaoPerguntas {
     }
 
     createQuestion(req) {
-        let body = "";
-        req.on('data', (chunk) => {
-          body += chunk;
-        }).on('end', () => {
-          body = JSON.parse(body);
-          fs.readFile("./" + this.fileName, (error, content) => {
-            if(error) {
-              this.res.writeHead(500);
-              this.res.end('Erro ao tentar ler o arquivo ' + fileName)
-              return;
-            }
-            let perguntas = JSON.parse(content);
-            perguntas = prepareQuestionStructure(perguntas, body);
-            this.saveQuestion(perguntas)
-          })
-      
-          this.res.writeHead(200);
-          this.res.end();
-        });
-      }
+      let body = "";
+      req.on('data', (chunk) => {
+        body += chunk;
+      }).on('end', () => {
+        body = JSON.parse(body);
+        console.log(body)
+        fs.readFile("./" + this.fileName, (error, content) => {
+          if(error) {
+            this.res.writeHead(500);
+            this.res.end('Erro ao tentar ler o arquivo ' + fileName)
+            return;
+          }
+          let perguntas = JSON.parse(content);
+          perguntas = prepareQuestionStructure(perguntas, body);
+          this.saveQuestion(perguntas)
+        })
+    
+        this.res.writeHead(200);
+        this.res.end();
+      });
+    }
     
     saveQuestion(perguntas) {
         fs.writeFile("./" + this.fileName, JSON.stringify(perguntas), err => {

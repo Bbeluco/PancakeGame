@@ -113,27 +113,43 @@ async function appendQuestionToList() {
         return;
     }
 
-    let perguntas_atuais = JSON.parse(localStorage.getItem("perguntas"));
+    // let perguntas_atuais = JSON.parse(localStorage.getItem("perguntas"));
     const nova_pergunta = {
+        "categoria": categoriaQuestao,
         "questao": textoQuestao,
         "alternativas": getTextFromAllAlternatives(alternativasQuestao),
         "resposta": respostaQuestao,
         "dificuldade": nivelQuestao
     }
 
-    if(perguntas_atuais == null) {
-        perguntas_atuais = {};
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(nova_pergunta)
     }
 
-    if(perguntas_atuais[categoriaQuestao]) {
-        perguntas_atuais[categoriaQuestao].push(nova_pergunta)
-    } else {
-        perguntas_atuais[categoriaQuestao] = [nova_pergunta]
-    }
+    fetch("http://localhost:8000/save", options).then(() => {
+        resetTodosCampos();
+    }).catch(err => {
+        alert("Erro ao cadastrar pergunta, consulte os logs para saber mais");
+        console.error(err);
+    })
 
-    localStorage.setItem("perguntas", JSON.stringify(perguntas_atuais))
+    // if(perguntas_atuais == null) {
+    //     perguntas_atuais = {};
+    // }
 
-    resetTodosCampos();
+    // if(perguntas_atuais[categoriaQuestao]) {
+    //     perguntas_atuais[categoriaQuestao].push(nova_pergunta)
+    // } else {
+    //     perguntas_atuais[categoriaQuestao] = [nova_pergunta]
+    // }
+
+    // localStorage.setItem("perguntas", JSON.stringify(perguntas_atuais))
+
+    // resetTodosCampos();
 }
 
 function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao) {
@@ -178,10 +194,3 @@ function resetTodosCampos() {
     document.getElementById("nivel_dificuldade").value = "";
     document.getElementById("tipoTexto").click()
 }
-
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-});
