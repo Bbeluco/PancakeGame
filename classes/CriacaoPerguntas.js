@@ -30,7 +30,6 @@ module.exports = class CriacaoPerguntas {
         body += chunk;
       }).on('end', () => {
         body = JSON.parse(body);
-        console.log(body)
         fs.readFile("./" + this.fileName, (error, content) => {
           if(error) {
             this.res.writeHead(500);

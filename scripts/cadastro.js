@@ -105,6 +105,7 @@ async function appendQuestionToList() {
     let respostaQuestao = document.getElementById("resposta_correta").value;
     let nivelQuestao = document.getElementById("nivel_dificuldade").value;
     let alternativasQuestao = document.querySelectorAll("input[id='texto_alternativa']");
+    let fileImagemQuestao = document.getElementById("img").files[0];
 
     let mensagemDeErro = validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuestao, alternativasQuestao);
 
@@ -113,9 +114,12 @@ async function appendQuestionToList() {
         return;
     }
 
+    const imagem = await getImageContentPath(fileImagemQuestao)
+    console.log(imagem)
     const nova_pergunta = {
         "categoria": categoriaQuestao,
         "questao": textoQuestao,
+        "imagem": imagem,
         "alternativas": getTextFromAllAlternatives(alternativasQuestao),
         "resposta": respostaQuestao,
         "dificuldade": nivelQuestao
@@ -148,7 +152,6 @@ function validacaoDePreenchimento(categoriaQuestao, textoQuestao, respostaQuesta
     }
 
     if(!categoriaQuestao) {
-        console.log(categoriaQuestao)
         mensagemDeErro += "A categoria da questao nao esta preenchida, favor verificar\n"
     }
 
@@ -172,6 +175,26 @@ function getTextFromAllAlternatives(alternativesAvailable) {
     return alternativesText;
 }
 
+async function getImageContentPath(fileImagemQuestao) {
+    if(fileImagemQuestao == undefined) {
+        return "";
+    }
+
+    const b64Image = await toBase64(fileImagemQuestao);
+
+    const options = {
+        method: "POST",
+        "Content-Type": "application/json",
+        body: JSON.stringify({ "imagemB64": b64Image })
+    }
+
+    return fetch("http://localhost:8000/saveImage", options).then(data => {
+        return data.json()
+    }).then(infoPath => {
+        return infoPath["imagem"]
+    })
+}
+
 function resetTodosCampos() {
     document.getElementById("categoria").value = ""
     document.getElementById("pergunta").value = "";
@@ -179,3 +202,10 @@ function resetTodosCampos() {
     document.getElementById("nivel_dificuldade").value = "";
     document.getElementById("tipoTexto").click()
 }
+
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+});

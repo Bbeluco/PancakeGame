@@ -1,52 +1,55 @@
 let http = require('http');
-let fs = require('fs');
 const CriacaoPerguntas = require('./classes/CriacaoPerguntas');
 const Podium = require('./classes/Podium');
+const ReturnFile = require('./classes/ReturnFile');
+const SalvaImagens = require('./classes/SalvaImagens');
 
 const PORT = 8000;
 
-//Passar para class depois
-function returnFile(url, res) {
-  let filePath = '.' + url;
-  if(filePath == "./") {
-    filePath = "./index.html"
+function saveQuestionMiddleware(req, res) {
+  if(req.method != "POST") {
+    return;
   }
+  const criacaoPerguntas = new CriacaoPerguntas("perguntas.json", res);
+  criacaoPerguntas.createQuestion(req);
+}
 
-  let extname = filePath.split('.').at(-1);
+function saveImagemMiddleware(req, res) {
+  if(req.method != "POST") {
+    return;
+  }
+  
+  const salvaImagem = new SalvaImagens(res);
+  salvaImagem.process(req);
+}
 
-  fs.readFile(filePath, function(error, content) {
-    if(error) {
-      res.writeHead(500);
-      res.end('Ocorreu um problema ao procurar pelo arquivo, favor entrar em contato com o Bebas')
-      return;
-    }
+function podiumMiddleware(req, res) {
+  const podium = new Podium("placar.json", res);
+  if(req.method == "DELETE") {
+    podium.resetPodium(req)
+  } else if(req.method == "POST") {
+    podium.updatePodium(req)
+  }
+}
 
-    const possibleExtensions = {
-      'js': "text/javascript",
-      'css': "text/css",
-      'json': "application/json",
-      'html': "text/html"
-    }
-
-    res.writeHead(200, { 'Content-Type': possibleExtensions[extname] });
-    res.end(content, 'utf-8');
-  });
+function returnFileMiddleware(req, res) {
+  const returnFiles = new ReturnFile(res);
+  returnFiles.returnFile(req.url)
 }
 
 http.createServer((req, res) => {
-  if(req.method == "POST" && req.url == "/save") {
-    const criacaoPerguntas = new CriacaoPerguntas("perguntas.json", res);
-    criacaoPerguntas.createQuestion(req);
-  } else if(req.method == "POST" && req.url == "/podium") {
-    const podium = new Podium("placar.json", res);
-    podium.updatePodium(req)
-  } else if(req.method == "DELETE" && req.url == "/podium") {
-    const podium = new Podium("placar.json", res);
-    podium.resetPodium(req)
-  } else {
-    returnFile(req.url, res);
+  switch(req.url) {
+    case "/save":
+      saveQuestionMiddleware(req, res);
+      break;
+    case "/saveImage":
+      saveImagemMiddleware(req, res);
+      break;
+    case "/podium":
+      podiumMiddleware(req, res)
+      break;
+    default:
+      returnFileMiddleware(req, res)
   }
-  
-  
 }).listen(PORT);
 console.log(`Server running in http://localhost:${PORT}`)
