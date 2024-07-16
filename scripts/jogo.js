@@ -190,7 +190,7 @@ function deve_finalizar_jogo(opcoes_disponiveis) {
     if(acabaram_perguntas) {
         let pergunta_atual = document.getElementById('questao_atual');
         document.getElementById('jogo').removeChild(pergunta_atual);
-        salvar_jogo_usuario()
+        salvar_jogo_usuario();
         alert("Fim de jogo");
         document.getElementById("btn_iniciar_jogo").disabled = false;
         
@@ -204,29 +204,14 @@ function salvar_jogo_usuario() {
     if(jogo_atual['pontuacao'] == 0) {
         return;
     }
-    
-    let podio_atual = JSON.parse(localStorage.getItem("podio"))
-    if(podio_atual == null) {
-        localStorage.setItem("podio", JSON.stringify([ jogo_atual ]))
-        return;
+
+    const options = {
+        method: "POST",
+        "Content-Type": "application/json",
+        "body": JSON.stringify(jogo_atual)
     }
 
-    if(podio_atual.length < 10) {
-        localStorage.setItem("podio", JSON.stringify([ ...podio_atual, jogo_atual ]))
-        return;
-    }
-
-    let menor_pontuacao = 0;
-    for (let i = 1; i < array.length; i++) {
-        if(podio_atual[menor_pontuacao]['pontuacao'] > podio_atual[i]['pontuacao']) {
-            menor_pontuacao = i;
-        }
-    }
-
-    if(jogo_atual['pontuacao'] > podio_atual[menor_pontuacao]['pontuacao']) {
-        podio_atual[menor_pontuacao] = jogo_atual;
-        localStorage.setItem("podio", JSON.stringify([ ...podio_atual ]))
-    }
+    fetch("http://localhost:8000/podium", options);
 }
 
 function atualizar_status_jogo_atual(dificuldade) {

@@ -1,6 +1,5 @@
-function carregar_resultados() {
-    let podio = JSON.parse(localStorage.getItem("podio"))
-
+async function carregar_resultados() {
+    let podio = await carregarPodio();
     let tabela = document.createElement("table");
     tabela.id = "tabela_resultados"
 
@@ -22,16 +21,17 @@ function carregar_resultados() {
             break;
         }
         let linha = tabela.insertRow();
+        usuario = JSON.parse(podio[i]);
 
         let celula_usuario_hora = linha.insertCell();
         let celula_usuario_nome = linha.insertCell();
         let celula_usuario_pontuacao = linha.insertCell();
         let celula_usuario_quantidade_perguntas = linha.insertCell();  
 
-        celula_usuario_hora.outerHTML = `<td>${podio[i]["data"]}</td>`
-        celula_usuario_nome.outerHTML = `<td>${podio[i]["nome_usuario"]}</td>`
-        celula_usuario_pontuacao.outerHTML = `<td>${podio[i]["pontuacao"]}</td>`
-        celula_usuario_quantidade_perguntas.outerHTML = `<td>${podio[i]["quantidade_perguntas_acertadas"]}</td>`
+        celula_usuario_hora.outerHTML = `<td>${usuario["data"]}</td>`
+        celula_usuario_nome.outerHTML = `<td>${usuario["nome_usuario"]}</td>`
+        celula_usuario_pontuacao.outerHTML = `<td>${usuario["pontuacao"]}</td>`
+        celula_usuario_quantidade_perguntas.outerHTML = `<td>${usuario["quantidade_perguntas_acertadas"]}</td>`
         
     }
 
@@ -41,9 +41,18 @@ function carregar_resultados() {
 
 function reiniciar_tabela() {
     if(confirm("Essa acao ira apagar todos os registros de resultados. Deseja prosseguir?")) {
-        localStorage.setItem("podio", JSON.stringify([]));
+        const options = {
+            method: "DELETE"
+        }
+
+        fetch("http://localhost:8000/podium", options);
+
         document.getElementById("resultados").removeChild()
     }
+}
 
-
+async function carregarPodio() {
+    return fetch("http://localhost:8000/placar.json").then(data => {
+        return data.json();
+    })
 }
