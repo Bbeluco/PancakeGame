@@ -115,7 +115,6 @@ async function appendQuestionToList() {
     }
 
     const imagem = await getImageContentPath(fileImagemQuestao)
-    console.log(imagem)
     const nova_pergunta = {
         "categoria": categoriaQuestao,
         "questao": textoQuestao,
@@ -200,6 +199,7 @@ function resetTodosCampos() {
     document.getElementById("pergunta").value = "";
     document.getElementById("resposta_correta").value = "";
     document.getElementById("nivel_dificuldade").value = "";
+    document.getElementById("img").value = "";
     document.getElementById("tipoTexto").click()
 }
 

@@ -54,7 +54,7 @@ async function buscar_perguntas(categorias) {
     })
 }
 
-function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
+async function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     let jogo = document.getElementById("jogo");
     if(document.getElementById("questao_atual")) {
         jogo.removeChild(document.getElementById("questao_atual"))
@@ -66,10 +66,21 @@ function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     let titulo_questao = document.createElement("h3");
 
     let pergunta_atual = opcoes_embaralhadas[perguntaAtual];
-
     titulo_questao.textContent = pergunta_atual["questao"];
 
     questao_atual.appendChild(titulo_questao);
+
+    if(pergunta_atual["imagem"] != "") {
+        const b64Image = await getImageContent(pergunta_atual["imagem"]);
+        let imagem_pergunta = document.createElement("img");
+        
+        imagem_pergunta.src = b64Image;
+        imagem_pergunta.style.maxWidth = "90%"
+        imagem_pergunta.style.maxHeight = "200px"
+        imagem_pergunta.onclick ="window.open(this.src)"
+        questao_atual.appendChild(imagem_pergunta);
+        questao_atual.appendChild(document.createElement("br"));
+    }
     
     
     if(pergunta_atual["alternativas"].length > 0) {
@@ -86,6 +97,12 @@ function carregar_pergunta(opcoes_embaralhadas, quantidade_de_perguntas) {
     criar_btn_responder(questao_atual, opcoes_embaralhadas, quantidade_de_perguntas)
 
     jogo.appendChild(questao_atual)
+}
+
+async function getImageContent(imageFileName) {
+    return await fetch("http://localhost:8000/imagens/" + imageFileName).then(data => {
+        return data.text();
+    })
 }
 
 function criar_resposta_multi(titulo_questao, alternativa, questao_atual) {

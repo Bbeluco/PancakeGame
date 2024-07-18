@@ -4,7 +4,8 @@ const possibleExtensions = {
     'js': "text/javascript",
     'css': "text/css",
     'json': "application/json",
-    'html': "text/html"
+    'html': "text/html",
+    "b64": "text/html"
 }
 
 function validateFilePath(url) {

@@ -8,6 +8,7 @@ function prepareQuestionStructure(perguntasAtuais, novaPergunta) {
     
     perguntasAtuais[novaPergunta["categoria"]].push({ 
         "questao": novaPergunta["questao"],
+        "imagem": novaPergunta["imagem"],
         "alternativas": novaPergunta["alternativas"],
         "resposta": novaPergunta["resposta"],
         "dificuldade": novaPergunta["dificuldade"]
